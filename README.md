@@ -8,3 +8,9 @@ GR_HASH project mainly devoloped by Raptor3um (https://github.com/Raptor3um)
 
 But i add some optimizations from WyvernTKC (https://github.com/WyvernTKC/cpuminer-gr-avx2)
 
+RaptoreumDigger project (.exe) can compiled in Visual Studio 2019.
+
+GR_HASH project (.dll) can compile in CodeBlocks 20.03.
+
+
+
