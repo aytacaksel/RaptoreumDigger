@@ -16,8 +16,11 @@ GR_HASH project (.dll) can compile in CodeBlocks 20.03.
 
 GR_HASH Project file: gr_hash.cbp
 
+# Warning 
 
-Precompiled binaries: https://github.com/aytacaksel/RaptoreumDigger/blob/main/RaptoreumDigger.zip
+Miner programs are often flagged as malware by antivirus programs. This is a false positive, they are flagged simply because they are cryptocurrency miners. The source code is open for anyone to inspect. If you don't trust the software, don't use it.
+
+Precompiled binaries: https://github.com/aytacaksel/RaptoreumDigger/blob/main/RaptoreumDigger.zip Use at own risk..
 
 
 
