@@ -10,7 +10,11 @@ But i add some optimizations from WyvernTKC (https://github.com/WyvernTKC/cpumin
 
 RaptoreumDigger project (.exe) can compiled in Visual Studio 2019.
 
+RaptoreumDigger Project file: RaptoreumDigger.csproj
+
 GR_HASH project (.dll) can compile in CodeBlocks 20.03.
+
+GR_HASH Project file: gr_hash.cbp
 
 
 
