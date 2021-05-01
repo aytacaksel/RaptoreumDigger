@@ -4,17 +4,17 @@ RaptoreumDigger fork of DotNetStratumMiner (https://github.com/ma261065/DotNetSt
 
 Miner using gr_hash.dll for core calculations.
 
-GR_HASH project mainly devoloped by Raptor3um (https://github.com/Raptor3um)
+gr_hash project mainly devoloped by Raptor3um (https://github.com/Raptor3um)
 
 But i add some optimizations from WyvernTKC (https://github.com/WyvernTKC/cpuminer-gr-avx2)
 
 RaptoreumDigger project (.exe) can compiled in Visual Studio 2019.
 
-RaptoreumDigger Project file: RaptoreumDigger.csproj
+RaptoreumDigger project file: RaptoreumDigger.csproj
 
-GR_HASH project (.dll) can compile in CodeBlocks 20.03.
+gr_hash project (.dll) can compile in CodeBlocks 20.03.
 
-GR_HASH Project file: gr_hash.cbp
+gr_hash project file: gr_hash.cbp
 
 # Warning 
 
