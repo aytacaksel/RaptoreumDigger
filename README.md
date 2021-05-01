@@ -4,7 +4,7 @@ RaptoreumDigger fork of DotNetStratumMiner (https://github.com/ma261065/DotNetSt
 
 Miner using gr_hash.dll for core calculations.
 
-gr_hash project mainly devoloped by Raptor3um (https://github.com/Raptor3um)
+gr_hash project developed by Raptor3um (https://github.com/Raptor3um)
 
 But i add some optimizations from WyvernTKC (https://github.com/WyvernTKC/cpuminer-gr-avx2)
 
