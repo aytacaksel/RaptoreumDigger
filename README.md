@@ -17,4 +17,7 @@ GR_HASH project (.dll) can compile in CodeBlocks 20.03.
 GR_HASH Project file: gr_hash.cbp
 
 
+Precompiled binaries: https://github.com/aytacaksel/RaptoreumDigger/blob/main/RaptoreumDigger.zip
+
+
 
