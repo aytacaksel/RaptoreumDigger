@@ -22,7 +22,7 @@ Miner programs are often flagged as malware by antivirus programs. This is a fal
 
 Precompiled binaries >>
 
-https://github.com/aytacaksel/RaptoreumDigger/releases/download/1.2/RaptoreumDigger_V1.2.zip
+https://github.com/aytacaksel/RaptoreumDigger/releases/download/1.3/RaptoreumDigger_V1.3.zip
 
 Run as Administrator not allow for security. Run it with normal user. Use at own risk..
 
