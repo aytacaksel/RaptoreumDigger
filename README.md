@@ -22,9 +22,7 @@ Miner programs are often flagged as malware by antivirus programs. This is a fal
 
 Precompiled binaries >>
 
-AVX2: https://github.com/aytacaksel/RaptoreumDigger/releases/download/1.1.AVX2/RaptoreumDigger_V1.1_AVX2.zip
-
-SSE2: https://github.com/aytacaksel/RaptoreumDigger/releases/download/1.1.SSE2/RaptoreumDigger_V1.1_SSE2.zip
+https://github.com/aytacaksel/RaptoreumDigger/releases/download/1.2/RaptoreumDigger_V1.2.zip
 
 Run as Administrator not allow for security. Run it with normal user. Use at own risk..
 
