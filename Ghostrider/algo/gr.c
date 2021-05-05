@@ -34,8 +34,11 @@
 #include <stdio.h>
 #include <windows.h>
 
+//#define MEMORY          1048576
+//#define MEMORY          2097152
 #define MEMORY          4194304
-
+//#define MEMORY          8388608
+//#define MEMORY          16777216
 static BOOL SetLockPagesPrivilege() {
     HANDLE token;
 
@@ -61,6 +64,8 @@ static BOOL SetLockPagesPrivilege() {
     return TRUE;
 }
 
+#define __MINGW32__
+
 #if defined(_MSC_VER)
 #define THREADV __declspec(thread)
 #else
@@ -68,6 +73,12 @@ static BOOL SetLockPagesPrivilege() {
 #endif
 THREADV uint8_t *hp_state = NULL;
 THREADV int hp_allocated = 0;
+
+void set_mem(uint8_t *membuffer)
+{
+    hp_state = membuffer;
+}
+
 void slow_hash_allocate_state(void)
 {
     if(hp_state != NULL)
@@ -75,16 +86,15 @@ void slow_hash_allocate_state(void)
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
     SetLockPagesPrivilege(GetCurrentProcess(), TRUE);
-    hp_state = (uint8_t *) VirtualAlloc(hp_state, MEMORY, MEM_LARGE_PAGES |
-                                        MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    hp_state = (uint8_t *) VirtualAlloc(hp_state, MEMORY, MEM_RESERVE | MEM_COMMIT | MEM_LARGE_PAGES, PAGE_READWRITE);
 #else
 #if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || \
   defined(__DragonFly__)
     hp_state = mmap(0, MEMORY, PROT_READ | PROT_WRITE,
                     MAP_PRIVATE | MAP_ANON, -1, 0);
 #else
-    hp_state = mmap(0, MEMORY, PROT_READ | PROT_WRITE,
-                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
+    hp_state = mmap(0, MEMORY, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
+
 #endif
     if(hp_state == MAP_FAILED)
         hp_state = NULL;

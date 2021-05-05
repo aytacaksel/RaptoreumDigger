@@ -21,7 +21,9 @@ extern "C"
 
 #include "algo/gr.h"
 void DLL_EXPORT GhostriderInit();
-void DLL_EXPORT GhostriderWork(int r1 ,int r2 ,int r3 ,int r4 ,int r5 ,int r6 , const char* input, char* output);
+void DLL_EXPORT GhostriderInit2(void *membuff);
+void DLL_EXPORT GhostriderFree();
+void DLL_EXPORT GhostriderWork(const char* input, char* output);
 
 #ifdef __cplusplus
 }

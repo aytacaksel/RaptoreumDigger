@@ -537,3 +537,557 @@
 	"md_helper.c"
 	"md_helper.c"
 
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\aesb.c
+	<stdint.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_blake256.c
+	<string.h>
+	<stdio.h>
+	<stdint.h>
+	"c_blake256.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_blake256.h
+	<stdint.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_groestl.c
+	"c_groestl.h"
+	"groestl_tables.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_groestl.h
+	"crypto_uint8.h"
+	"crypto_uint32.h"
+	"crypto_uint64.h"
+	"crypto_hash.h"
+	<stdint.h>
+	"hash.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\hash.h
+	"hash-ops.h"
+	<string>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\hash-ops.h
+	<assert.h>
+	<stdbool.h>
+	<stddef.h>
+	<stdint.h>
+	"int-util.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\int-util.h
+	<assert.h>
+	<stdbool.h>
+	<stdint.h>
+	<string.h>
+	<sys/byteorder.h>
+	<stdlib.h>
+	<sys/param.h>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\groestl_tables.h
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_jh.c
+	"c_jh.h"
+	<stdint.h>
+	<string.h>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_jh.h
+	"hash.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_keccak.c
+	"hash-ops.h"
+	"c_keccak.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_keccak.h
+	<stdint.h>
+	<string.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_skein.c
+	<stddef.h>
+	<string.h>
+	"c_skein.h"
+	<assert.h>
+	<assert.h>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\c_skein.h
+	"skein_port.h"
+	"hash.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\skein_port.h
+	<limits.h>
+	<stdint.h>
+	"int-util.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\hash.c
+	<stddef.h>
+	<stdint.h>
+	<string.h>
+	"hash-ops.h"
+	"c_keccak.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\oaes_lib.c
+	<stddef.h>
+	<time.h>
+	<sys/timeb.h>
+	<malloc/malloc.h>
+	<malloc.h>
+	<string.h>
+	<stdlib.h>
+	<stdio.h>
+	<process.h>
+	<sys/types.h>
+	<unistd.h>
+	"oaes_config.h"
+	"oaes_lib.h"
+	"rand.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\oaes_config.h
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\oaes_lib.h
+	<stdint.h>
+	<stdlib.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\wild_keccak.cpp
+	"wild_keccak.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\wild_keccak.h
+	<stdint.h>
+	<string.h>
+	"hash.h"
+
+1617896440 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\cryptonote\crypto\variant2_int_sqrt.h
+	<math.h>
+	<float.h>
+
+1617896440 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_soft_shell.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+
+1619865784 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_dark.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+	<wmmintrin.h>
+
+1619865784 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_dark_lite.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+	<wmmintrin.h>
+
+1619865784 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_fast.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+	<wmmintrin.h>
+
+1619865784 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_lite.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+	<wmmintrin.h>
+
+1619865784 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_turtle.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+	<wmmintrin.h>
+
+1619865784 source:c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_turtle_lite.c
+	<stdio.h>
+	<stdlib.h>
+	"crypto/oaes_lib.h"
+	"crypto/c_keccak.h"
+	"crypto/c_groestl.h"
+	"crypto/c_blake256.h"
+	"crypto/c_jh.h"
+	"crypto/c_skein.h"
+	"crypto/int-util.h"
+	"crypto/hash-ops.h"
+	"crypto/variant2_int_sqrt.h"
+	<malloc.h>
+	<wmmintrin.h>
+
+1620185359 source:c:\users\lu\source\repos\ghostrider\algo\gr.c
+	<stdint.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"sph/extra.h"
+	"sph/sph_blake.h"
+	"sph/sph_bmw.h"
+	"sph/sph_groestl.h"
+	"sph/sph_jh.h"
+	"sph/sph_keccak.h"
+	"sph/sph_skein.h"
+	"sph/sph_luffa.h"
+	"sph/sph_cubehash.h"
+	"sph/sph_shavite.h"
+	"sph/sph_simd.h"
+	"sph/sph_echo.h"
+	"sph/sph_hamsi.h"
+	"sph/sph_fugue.h"
+	"sph/sph_shabal.h"
+	"sph/sph_whirlpool.h"
+	"sph/sph_sha2.h"
+	"sph/sph_haval.h"
+	"sph/sph_tiger.h"
+	"sph/lyra2.h"
+	"sph/gost_streebog.h"
+	"cryptonote/cryptonight_dark.h"
+	"cryptonote/cryptonight_dark_lite.h"
+	"cryptonote/cryptonight_fast.h"
+	"cryptonote/cryptonight.h"
+	"cryptonote/cryptonight_lite.h"
+	"cryptonote/cryptonight_soft_shell.h"
+	"cryptonote/cryptonight_turtle.h"
+	"cryptonote/cryptonight_turtle_lite.h"
+	<stdio.h>
+	<windows.h>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\extra.h
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_blake.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_types.h
+	<limits.h>
+	<stdint.h>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_bmw.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_groestl.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_jh.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_keccak.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_skein.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_luffa.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_cubehash.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_shavite.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_simd.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_echo.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_hamsi.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_fugue.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_shabal.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_whirlpool.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_sha2.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_haval.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sph_tiger.h
+	<stddef.h>
+	"sph_types.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\lyra2.h
+	<stdint.h>
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\gost_streebog.h
+	<stddef.h>
+	"sph_types.h"
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_dark.h
+	<stdint.h>
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_dark_lite.h
+	<stdint.h>
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_fast.h
+	<stdint.h>
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight.h
+	<stdint.h>
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_lite.h
+	<stdint.h>
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_soft_shell.h
+	<stdint.h>
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_turtle.h
+	<stdint.h>
+
+1617896440 c:\users\lu\source\repos\ghostrider\algo\cryptonote\cryptonight_turtle_lite.h
+	<stdint.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\aes_helper.c
+	"sph_types.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\blake.c
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"sph_blake.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\bmw.c
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"sph_bmw.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\cubehash.c
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"sph_cubehash.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\echo.c
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"sph_echo.h"
+	"aes_helper.c"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\aes_helper.c
+	"sph_types.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\extra.c
+	<stdint.h>
+	<string.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\fugue.c
+	<stddef.h>
+	<string.h>
+	"sph_fugue.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\gost_streebog.c
+	<stdio.h>
+	<stdlib.h>
+	<memory.h>
+	<math.h>
+	"gost_streebog.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\groestl.c
+	<stddef.h>
+	<string.h>
+	"sph_groestl.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\hamsi.c
+	<stddef.h>
+	<string.h>
+	"sph_hamsi.h"
+	"hamsi_helper.c"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\hamsi_helper.c
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\hamsi_helper.c
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\haval.c
+	<stddef.h>
+	<string.h>
+	"sph_haval.h"
+	"haval_helper.c"
+	"haval_helper.c"
+	"haval_helper.c"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\haval_helper.c
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\jh.c
+	<stddef.h>
+	<string.h>
+	"sph_jh.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\keccak.c
+	<stddef.h>
+	<string.h>
+	"sph_keccak.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\luffa.c
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"sph_luffa.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\lyra2.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"lyra2.h"
+	"sponge.h"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\sponge.h
+	<stdint.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\sha2.c
+	<string.h>
+	<inttypes.h>
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\shabal.c
+	<stddef.h>
+	<string.h>
+	"sph_shabal.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\shavite.c
+	<stddef.h>
+	<string.h>
+	"sph_shavite.h"
+	"aes_helper.c"
+	"aes_helper.c"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\simd.c
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"sph_simd.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\skein.c
+	<stddef.h>
+	<string.h>
+	"sph_skein.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\sph_sha2.c
+	<stddef.h>
+	<string.h>
+	"sph_sha2.h"
+	"md_helper.c"
+
+1613998494 c:\users\lu\source\repos\ghostrider\algo\sph\md_helper.c
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\sph_sha2big.c
+	<stddef.h>
+	<string.h>
+	"sph_sha2.h"
+	"md_helper.c"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\sponge.c
+	<string.h>
+	<stdio.h>
+	<time.h>
+	"sponge.h"
+	"lyra2.h"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\tiger.c
+	<stddef.h>
+	<string.h>
+	"sph_tiger.h"
+	"md_helper.c"
+	"md_helper.c"
+
+1613998494 source:c:\users\lu\source\repos\ghostrider\algo\sph\whirlpool.c
+	<stddef.h>
+	<string.h>
+	"sph_whirlpool.h"
+	"md_helper.c"
+	"md_helper.c"
+	"md_helper.c"
+
+1620058885 source:c:\users\lu\source\repos\ghostrider\main.cpp
+	"main.h"
+
+1620058885 c:\users\lu\source\repos\ghostrider\main.h
+	<windows.h>
+	"algo/gr.h"
+
+1620058885 c:\users\lu\source\repos\ghostrider\algo\gr.h
+
