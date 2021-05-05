@@ -83,6 +83,8 @@ namespace RaptoreumDigger
 
             string MerkleRoot = Utilities.ByteArrayToHexString(Utilities.ReverseByteArrayByFours(hashValue2));
 
+            mySHA256.Dispose();
+
             return MerkleRoot;
         }
      

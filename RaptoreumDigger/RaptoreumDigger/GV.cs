@@ -1,4 +1,6 @@
-﻿namespace RaptoreumDigger
+﻿using System.Threading;
+
+namespace RaptoreumDigger
 {
     public static class GV
     {
@@ -10,6 +12,11 @@
         public static bool Bench = false;
 
         public static bool DarkTheme = false;
+
+        public static Thread[] threads;
+        public static bool[] threadStateList;
+        public static uint[] NonceList;
+        public static uint[] MaxNonceList;
     }
 
     public class HT

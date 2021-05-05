@@ -31,6 +31,9 @@ namespace RaptoreumDigger
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.gSettings = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.rSSE2 = new System.Windows.Forms.RadioButton();
+            this.rAVX2 = new System.Windows.Forms.RadioButton();
             this.cbPriority = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.chkBench = new System.Windows.Forms.CheckBox();
@@ -53,6 +56,21 @@ namespace RaptoreumDigger
             this.tTheme = new System.Windows.Forms.TrackBar();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.gStatus = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.lblUptime = new System.Windows.Forms.Label();
+            this.lblCurrentDifficulty = new System.Windows.Forms.Label();
+            this.lblAverageHashrate = new System.Windows.Forms.Label();
+            this.lblCurrentHashrate = new System.Windows.Forms.Label();
+            this.lblRejectedShares = new System.Windows.Forms.Label();
+            this.lblAcceptedShares = new System.Windows.Forms.Label();
+            this.lblTotalShares = new System.Windows.Forms.Label();
             this.gSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nThreadCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nPoolPort)).BeginInit();
@@ -60,13 +78,20 @@ namespace RaptoreumDigger
             this.gLog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tTheme)).BeginInit();
+            this.gStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // gSettings
             // 
+            this.gSettings.Controls.Add(this.label9);
+            this.gSettings.Controls.Add(this.label8);
+            this.gSettings.Controls.Add(this.rSSE2);
+            this.gSettings.Controls.Add(this.rAVX2);
+            this.gSettings.Controls.Add(this.label7);
             this.gSettings.Controls.Add(this.cbPriority);
             this.gSettings.Controls.Add(this.label6);
             this.gSettings.Controls.Add(this.chkBench);
+            this.gSettings.Controls.Add(this.tTheme);
             this.gSettings.Controls.Add(this.nThreadCount);
             this.gSettings.Controls.Add(this.nPoolPort);
             this.gSettings.Controls.Add(this.txtPassword);
@@ -79,10 +104,43 @@ namespace RaptoreumDigger
             this.gSettings.Controls.Add(this.label1);
             this.gSettings.Location = new System.Drawing.Point(12, 12);
             this.gSettings.Name = "gSettings";
-            this.gSettings.Size = new System.Drawing.Size(406, 201);
+            this.gSettings.Size = new System.Drawing.Size(556, 225);
             this.gSettings.TabIndex = 0;
             this.gSettings.TabStop = false;
             this.gSettings.Text = "Settings";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(40, 192);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(70, 14);
+            this.label9.TabIndex = 15;
+            this.label9.Text = "CPU Mode:";
+            // 
+            // rSSE2
+            // 
+            this.rSSE2.AutoSize = true;
+            this.rSSE2.Location = new System.Drawing.Point(175, 190);
+            this.rSSE2.Name = "rSSE2";
+            this.rSSE2.Size = new System.Drawing.Size(53, 18);
+            this.rSSE2.TabIndex = 14;
+            this.rSSE2.Text = "SSE2";
+            this.rSSE2.UseVisualStyleBackColor = true;
+            this.rSSE2.CheckedChanged += new System.EventHandler(this.rSSE2_CheckedChanged);
+            // 
+            // rAVX2
+            // 
+            this.rAVX2.AutoSize = true;
+            this.rAVX2.Checked = true;
+            this.rAVX2.Location = new System.Drawing.Point(116, 190);
+            this.rAVX2.Name = "rAVX2";
+            this.rAVX2.Size = new System.Drawing.Size(53, 18);
+            this.rAVX2.TabIndex = 13;
+            this.rAVX2.TabStop = true;
+            this.rAVX2.Text = "AVX2";
+            this.rAVX2.UseVisualStyleBackColor = true;
+            this.rAVX2.CheckedChanged += new System.EventHandler(this.rAVX2_CheckedChanged);
             // 
             // cbPriority
             // 
@@ -112,7 +170,7 @@ namespace RaptoreumDigger
             // 
             this.chkBench.AutoSize = true;
             this.chkBench.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.chkBench.Location = new System.Drawing.Point(311, 177);
+            this.chkBench.Location = new System.Drawing.Point(461, 201);
             this.chkBench.Name = "chkBench";
             this.chkBench.Size = new System.Drawing.Size(89, 18);
             this.chkBench.TabIndex = 10;
@@ -224,9 +282,9 @@ namespace RaptoreumDigger
             // 
             this.gControl.Controls.Add(this.btnStop);
             this.gControl.Controls.Add(this.btnStart);
-            this.gControl.Location = new System.Drawing.Point(424, 12);
+            this.gControl.Location = new System.Drawing.Point(852, 12);
             this.gControl.Name = "gControl";
-            this.gControl.Size = new System.Drawing.Size(106, 201);
+            this.gControl.Size = new System.Drawing.Size(130, 225);
             this.gControl.TabIndex = 1;
             this.gControl.TabStop = false;
             this.gControl.Text = "Control";
@@ -236,7 +294,7 @@ namespace RaptoreumDigger
             this.btnStop.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnStop.Enabled = false;
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStop.Location = new System.Drawing.Point(14, 104);
+            this.btnStop.Location = new System.Drawing.Point(25, 125);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(80, 46);
             this.btnStop.TabIndex = 1;
@@ -248,7 +306,7 @@ namespace RaptoreumDigger
             // 
             this.btnStart.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStart.Location = new System.Drawing.Point(14, 38);
+            this.btnStart.Location = new System.Drawing.Point(25, 59);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(80, 46);
             this.btnStart.TabIndex = 0;
@@ -258,10 +316,11 @@ namespace RaptoreumDigger
             // 
             // gLog
             // 
+            this.gLog.Controls.Add(this.pictureBox1);
             this.gLog.Controls.Add(this.txtLog);
-            this.gLog.Location = new System.Drawing.Point(12, 219);
+            this.gLog.Location = new System.Drawing.Point(12, 243);
             this.gLog.Name = "gLog";
-            this.gLog.Size = new System.Drawing.Size(760, 330);
+            this.gLog.Size = new System.Drawing.Size(970, 366);
             this.gLog.TabIndex = 2;
             this.gLog.TabStop = false;
             this.gLog.Text = "Log";
@@ -272,18 +331,19 @@ namespace RaptoreumDigger
             this.txtLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtLog.Location = new System.Drawing.Point(3, 18);
+            this.txtLog.MaxLength = 50;
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
-            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(754, 309);
+            this.txtLog.Size = new System.Drawing.Size(964, 345);
             this.txtLog.TabIndex = 0;
+            this.txtLog.TextChanged += new System.EventHandler(this.txtLog_TextChanged);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(540, 75);
+            this.pictureBox1.Location = new System.Drawing.Point(817, 213);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(226, 162);
+            this.pictureBox1.Size = new System.Drawing.Size(150, 150);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -292,7 +352,7 @@ namespace RaptoreumDigger
             // 
             this.tTheme.AutoSize = false;
             this.tTheme.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.tTheme.Location = new System.Drawing.Point(672, 17);
+            this.tTheme.Location = new System.Drawing.Point(450, 35);
             this.tTheme.Maximum = 1;
             this.tTheme.Name = "tTheme";
             this.tTheme.Size = new System.Drawing.Size(57, 30);
@@ -303,7 +363,7 @@ namespace RaptoreumDigger
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(624, 23);
+            this.label7.Location = new System.Drawing.Point(402, 41);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(42, 14);
             this.label7.TabIndex = 5;
@@ -313,26 +373,165 @@ namespace RaptoreumDigger
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(736, 23);
+            this.label8.Location = new System.Drawing.Point(514, 41);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(35, 14);
             this.label8.TabIndex = 6;
             this.label8.Text = "Dark";
             this.label8.Visible = false;
             // 
+            // gStatus
+            // 
+            this.gStatus.Controls.Add(this.lblUptime);
+            this.gStatus.Controls.Add(this.lblCurrentDifficulty);
+            this.gStatus.Controls.Add(this.lblAverageHashrate);
+            this.gStatus.Controls.Add(this.lblCurrentHashrate);
+            this.gStatus.Controls.Add(this.lblRejectedShares);
+            this.gStatus.Controls.Add(this.lblAcceptedShares);
+            this.gStatus.Controls.Add(this.lblTotalShares);
+            this.gStatus.Controls.Add(this.label18);
+            this.gStatus.Controls.Add(this.label11);
+            this.gStatus.Controls.Add(this.label12);
+            this.gStatus.Controls.Add(this.label13);
+            this.gStatus.Controls.Add(this.label14);
+            this.gStatus.Controls.Add(this.label15);
+            this.gStatus.Controls.Add(this.label16);
+            this.gStatus.Location = new System.Drawing.Point(574, 12);
+            this.gStatus.Name = "gStatus";
+            this.gStatus.Size = new System.Drawing.Size(272, 225);
+            this.gStatus.TabIndex = 7;
+            this.gStatus.TabStop = false;
+            this.gStatus.Text = "Stats";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(13, 164);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(133, 14);
+            this.label11.TabIndex = 11;
+            this.label11.Text = "Current Difficulty";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(13, 51);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(119, 14);
+            this.label12.TabIndex = 4;
+            this.label12.Text = "Average Hashrate";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(13, 24);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(119, 14);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Current Hashrate";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(13, 135);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(112, 14);
+            this.label14.TabIndex = 2;
+            this.label14.Text = "Rejected Shares";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(13, 108);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(112, 14);
+            this.label15.TabIndex = 1;
+            this.label15.Text = "Accepted Shares";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(13, 80);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(91, 14);
+            this.label16.TabIndex = 0;
+            this.label16.Text = "Total Shares";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(13, 192);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(49, 14);
+            this.label18.TabIndex = 12;
+            this.label18.Text = "Uptime";
+            // 
+            // lblUptime
+            // 
+            this.lblUptime.AutoSize = true;
+            this.lblUptime.Location = new System.Drawing.Point(159, 192);
+            this.lblUptime.Name = "lblUptime";
+            this.lblUptime.Size = new System.Drawing.Size(0, 14);
+            this.lblUptime.TabIndex = 19;
+            // 
+            // lblCurrentDifficulty
+            // 
+            this.lblCurrentDifficulty.AutoSize = true;
+            this.lblCurrentDifficulty.Location = new System.Drawing.Point(159, 164);
+            this.lblCurrentDifficulty.Name = "lblCurrentDifficulty";
+            this.lblCurrentDifficulty.Size = new System.Drawing.Size(0, 14);
+            this.lblCurrentDifficulty.TabIndex = 18;
+            // 
+            // lblAverageHashrate
+            // 
+            this.lblAverageHashrate.AutoSize = true;
+            this.lblAverageHashrate.Location = new System.Drawing.Point(159, 51);
+            this.lblAverageHashrate.Name = "lblAverageHashrate";
+            this.lblAverageHashrate.Size = new System.Drawing.Size(0, 14);
+            this.lblAverageHashrate.TabIndex = 17;
+            // 
+            // lblCurrentHashrate
+            // 
+            this.lblCurrentHashrate.AutoSize = true;
+            this.lblCurrentHashrate.Location = new System.Drawing.Point(159, 24);
+            this.lblCurrentHashrate.Name = "lblCurrentHashrate";
+            this.lblCurrentHashrate.Size = new System.Drawing.Size(0, 14);
+            this.lblCurrentHashrate.TabIndex = 16;
+            // 
+            // lblRejectedShares
+            // 
+            this.lblRejectedShares.AutoSize = true;
+            this.lblRejectedShares.Location = new System.Drawing.Point(159, 135);
+            this.lblRejectedShares.Name = "lblRejectedShares";
+            this.lblRejectedShares.Size = new System.Drawing.Size(0, 14);
+            this.lblRejectedShares.TabIndex = 15;
+            // 
+            // lblAcceptedShares
+            // 
+            this.lblAcceptedShares.AutoSize = true;
+            this.lblAcceptedShares.Location = new System.Drawing.Point(159, 108);
+            this.lblAcceptedShares.Name = "lblAcceptedShares";
+            this.lblAcceptedShares.Size = new System.Drawing.Size(0, 14);
+            this.lblAcceptedShares.TabIndex = 14;
+            // 
+            // lblTotalShares
+            // 
+            this.lblTotalShares.AutoSize = true;
+            this.lblTotalShares.Location = new System.Drawing.Point(159, 80);
+            this.lblTotalShares.Name = "lblTotalShares";
+            this.lblTotalShares.Size = new System.Drawing.Size(0, 14);
+            this.lblTotalShares.TabIndex = 13;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.tTheme);
+            this.ClientSize = new System.Drawing.Size(994, 621);
+            this.Controls.Add(this.gStatus);
             this.Controls.Add(this.gLog);
             this.Controls.Add(this.gControl);
             this.Controls.Add(this.gSettings);
-            this.Controls.Add(this.pictureBox1);
             this.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -351,8 +550,9 @@ namespace RaptoreumDigger
             this.gLog.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tTheme)).EndInit();
+            this.gStatus.ResumeLayout(false);
+            this.gStatus.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -381,6 +581,24 @@ namespace RaptoreumDigger
         private System.Windows.Forms.TrackBar tTheme;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.RadioButton rSSE2;
+        private System.Windows.Forms.RadioButton rAVX2;
+        private System.Windows.Forms.GroupBox gStatus;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label18;
+        public System.Windows.Forms.Label lblUptime;
+        public System.Windows.Forms.Label lblCurrentDifficulty;
+        public System.Windows.Forms.Label lblAverageHashrate;
+        public System.Windows.Forms.Label lblCurrentHashrate;
+        public System.Windows.Forms.Label lblRejectedShares;
+        public System.Windows.Forms.Label lblAcceptedShares;
+        public System.Windows.Forms.Label lblTotalShares;
     }
 }
 

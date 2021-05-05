@@ -43,13 +43,28 @@ namespace RaptoreumDigger
                 tcpClient = new TcpClient();
 
 
-                
+
                 tcpClient.BeginConnect(Server, Port, new AsyncCallback(ConnectCallback), tcpClient);
             }
             catch (Exception ex)
             {
-                main.WriteLog("Socket error:" + ex.Message);
+                if (!GV.StopMining)
+                {
+                    main.WriteLog("Socket error:" + ex.Message);
+                }
             }
+        }
+
+        public void Close()
+        {
+            if (tcpClient != null)
+            {
+                if (tcpClient.Connected)
+                {
+                    tcpClient.Close();
+                }
+            }
+
         }
 
         private void ConnectCallback(IAsyncResult result)
@@ -62,7 +77,7 @@ namespace RaptoreumDigger
                 return;
             }
 
-            
+
             try
             {
                 SendSUBSCRIBE();
@@ -71,12 +86,15 @@ namespace RaptoreumDigger
                 NetworkStream networkStream = tcpClient.GetStream();
                 byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
 
-                
+
                 networkStream.BeginRead(buffer, 0, buffer.Length, ReadCallback, buffer);
             }
             catch (Exception ex)
             {
-                main.WriteLog("Socket error:" + ex.Message);
+                if (!GV.StopMining)
+                {
+                    main.WriteLog("Socket error:" + ex.Message);
+                }
             }
         }
 
@@ -98,13 +116,16 @@ namespace RaptoreumDigger
                 tcpClient.GetStream().Write(bytesSent, 0, bytesSent.Length);
                 HT ht = new HT(Command.id, Command.method);
                 PendingACKs.Add(ht);
-
-
             }
             catch (Exception ex)
             {
-                main.WriteLog("Socket error:" + ex.Message);
-                ConnectToServer(Server, Port, Username, Password);
+                if (!GV.StopMining)
+                {
+                    main.WriteLog("Socket error:" + ex.Message);
+                    ConnectToServer(Server, Port, Username, Password);
+                }
+
+                return; //
             }
 
             main.WriteLog("Sent mining.subscribe");
@@ -133,8 +154,13 @@ namespace RaptoreumDigger
             }
             catch (Exception ex)
             {
-                main.WriteLog("Socket error:" + ex.Message);
-                ConnectToServer(Server, Port, Username, Password);
+                if (!GV.StopMining)
+                {
+                    main.WriteLog("Socket error:" + ex.Message);
+                    ConnectToServer(Server, Port, Username, Password);
+                }
+
+                return; //
             }
 
             main.WriteLog("Sent mining.authorize");
@@ -175,107 +201,129 @@ namespace RaptoreumDigger
             }
             catch (Exception ex)
             {
-                main.WriteLog("Socket error:" + ex.Message);
-                ConnectToServer(Server, Port, Username, Password);
+                if (!GV.StopMining)
+                {
+                    main.WriteLog("Socket error:" + ex.Message);
+                    ConnectToServer(Server, Port, Username, Password);
+                }
+
+                return; //
             }
 
-            main.WriteLog(DateTime.Now + " - Submit (Difficulty " + Difficulty + ")");
+            main.WriteLog("Submit (Difficulty " + Difficulty + ")");
         }
 
         private void ReadCallback(IAsyncResult result)
         {
-            NetworkStream networkStream;
-            int bytesread;
-
-            byte[] buffer = result.AsyncState as byte[];
 
             try
             {
-                networkStream = tcpClient.GetStream();
-                bytesread = networkStream.EndRead(result);
-            }
-            catch (Exception ex)
-            {
-                main.WriteLog("Socket error:" + ex.Message);
-                return;
-            }
 
-            if (bytesread == 0)
-            {
-                main.WriteLog(DateTime.Now + " Disconnected. Reconnecting...");
-                
-                tcpClient.Close();
-                tcpClient = null;
-                PendingACKs.Clear();
-                ConnectToServer(Server, Port, Username, Password);
-                return;
-            }
+                NetworkStream networkStream;
+                int bytesread;
 
-            
-            string data = ASCIIEncoding.ASCII.GetString(buffer, 0, bytesread);
-            
+                byte[] buffer = result.AsyncState as byte[];
 
-            page = page + data;
-
-            int FoundClose = page.IndexOf('}');
-
-            while (FoundClose > 0)
-            {
-                string CurrentString = page.Substring(0, FoundClose + 1);
-
-                
-                ZtratumCommand Command = Utilities.JsonDeserialize<ZtratumCommand>(CurrentString);
-                ZtratumResponse Response = Utilities.JsonDeserialize<ZtratumResponse>(CurrentString);
-
-                ZtratumEventArgs e = new ZtratumEventArgs();
-
-                if (Command.method != null)          
+                try
                 {
-                    
-                    e.MiningEventArg = Command;
-
-                    switch (Command.method)
-                    {
-                        case "mining.notify":
-                            if (GotNotify != null)
-                                GotNotify(this, e);
-                            break;
-                        case "mining.set_difficulty":
-                            if (GotSetDifficulty != null)
-                                GotSetDifficulty(this, e);
-                            break;
-                    }
+                    networkStream = tcpClient.GetStream();
+                    bytesread = networkStream.EndRead(result);
                 }
-                else if (Response.error != null || Response.result != null)     
+                catch (Exception ex)
                 {
-                    
-                    e.MiningEventArg = Response;
-
-                   
-
-                    string Cmd = "";
-                    for (int i = 0; i < PendingACKs.Count; i++)
+                    if (!GV.StopMining)
                     {
-                        if (PendingACKs[i].id == Response.id)
+                        main.WriteLog("Socket error:" + ex.Message);
+                    }
+                    return;
+                }
+
+                if (bytesread == 0)
+                {
+                    main.WriteLog("Disconnected. Reconnecting...");
+
+                    tcpClient.Close();
+                    tcpClient = null;
+                    PendingACKs.Clear();
+
+                    if (!GV.StopMining)
+                    {
+                        ConnectToServer(Server, Port, Username, Password);
+                    }
+                    return;
+                }
+
+
+                string data = ASCIIEncoding.ASCII.GetString(buffer, 0, bytesread);
+
+
+                page = page + data;
+
+                int FoundClose = page.IndexOf('}');
+
+                while (FoundClose > 0)
+                {
+                    string CurrentString = page.Substring(0, FoundClose + 1);
+
+
+                    ZtratumCommand Command = Utilities.JsonDeserialize<ZtratumCommand>(CurrentString);
+                    ZtratumResponse Response = Utilities.JsonDeserialize<ZtratumResponse>(CurrentString);
+
+                    ZtratumEventArgs e = new ZtratumEventArgs();
+
+                    if (Command.method != null)
+                    {
+
+                        e.MiningEventArg = Command;
+
+                        switch (Command.method)
                         {
-                            Cmd = PendingACKs[i].method;
-                            PendingACKs.RemoveAt(i);
-                            break;
+                            case "mining.notify":
+                                if (GotNotify != null)
+                                    GotNotify(this, e);
+                                break;
+                            case "mining.set_difficulty":
+                                if (GotSetDifficulty != null)
+                                    GotSetDifficulty(this, e);
+                                break;
                         }
                     }
+                    else if (Response.error != null || Response.result != null)
+                    {
 
-                    if (Cmd == null)
-                        main.WriteLog("Unexpected Response");
-                    else if (GotResponse != null)
-                        GotResponse(Cmd, e);
+                        e.MiningEventArg = Response;
+
+
+
+                        string Cmd = "";
+                        for (int i = 0; i < PendingACKs.Count; i++)
+                        {
+                            if (PendingACKs[i].id == Response.id)
+                            {
+                                Cmd = PendingACKs[i].method;
+                                PendingACKs.RemoveAt(i);
+                                break;
+                            }
+                        }
+
+                        if (Cmd == null)
+                            main.WriteLog("Unexpected Response");
+                        else if (GotResponse != null)
+                            GotResponse(Cmd, e);
+                    }
+
+                    page = page.Remove(0, FoundClose + 2);
+                    FoundClose = page.IndexOf('}');
                 }
 
-                page = page.Remove(0, FoundClose + 2);
-                FoundClose = page.IndexOf('}');
-            }
 
-            
-            networkStream.BeginRead(buffer, 0, buffer.Length, ReadCallback, buffer);
+                networkStream.BeginRead(buffer, 0, buffer.Length, ReadCallback, buffer);
+
+
+            }
+            catch { }
+
+
         }
     }
 
