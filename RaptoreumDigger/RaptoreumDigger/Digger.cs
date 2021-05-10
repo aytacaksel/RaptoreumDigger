@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -10,35 +11,66 @@ namespace RaptoreumDigger
 {
     class Digger
     {
-        [DllImport("kernel32.dll", EntryPoint = "LoadLibrary")]
-        static extern int LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string lpLibFileName);
+        ReaderWriterLock thLock = new ReaderWriterLock();
 
-        [DllImport("kernel32.dll", EntryPoint = "GetProcAddress")]
-        static extern IntPtr GetProcAddress(int hModule, [MarshalAs(UnmanagedType.LPStr)] string lpProcName);
+        [Flags]
+        public enum FreeType
+        {
+            Decommit = 0x4000,
+            Release = 0x8000,
+        }
 
-        [DllImport("kernel32.dll", EntryPoint = "FreeLibrary")]
-        static extern bool FreeLibrary(int hModule);
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern bool SetDllDirectory(string lpPathName);
+        [Flags]
+        public enum AllocationType
+        {
+            Commit = 0x1000,
+            Reserve = 0x2000,
+            Decommit = 0x4000,
+            Release = 0x8000,
+            Reset = 0x80000,
+            Physical = 0x400000,
+            TopDown = 0x100000,
+            WriteWatch = 0x200000,
+            LargePages = 0x20000000
+        }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr GetModuleHandle(string lpModuleName);
+        [Flags]
+        public enum MemoryProtection
+        {
+            Execute = 0x10,
+            ExecuteRead = 0x20,
+            ExecuteReadWrite = 0x40,
+            ExecuteWriteCopy = 0x80,
+            NoAccess = 0x01,
+            ReadOnly = 0x02,
+            ReadWrite = 0x04,
+            WriteCopy = 0x08,
+            GuardModifierflag = 0x100,
+            NoCacheModifierflag = 0x200,
+            WriteCombineModifierflag = 0x400
+        }
 
-        //[DllImport("Ghostrider.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        //private static extern void GhostriderInit();
+        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Ansi)]
+        static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string lpFileName);
 
-        //[DllImport("Ghostrider.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        //private static extern void GhostriderWork(byte[] input, byte[] output);
+        [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+        static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool FreeLibrary(IntPtr hModule);
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, IntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        static extern bool VirtualFreeEx(IntPtr hProcess, IntPtr lpAddress, int dwSize, FreeType dwFreeType);
 
         frmMain main;
 
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void GhostriderInit();
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void GhostriderFree();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Auto)]
+        delegate void GhostriderInit(IntPtr buffer);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void GhostriderWork
@@ -47,10 +79,13 @@ namespace RaptoreumDigger
           byte[] output
         );
 
-
+        internal static class UnsafeNativeMethods
+        {
+            [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+            internal static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+        }
 
         public volatile bool done = false;
-        public volatile uint FinalNonce = 0;
 
         Thread[] threads;
         int[] hashCountList;
@@ -63,9 +98,9 @@ namespace RaptoreumDigger
             hashStartList = new DateTime[threadCount];
         }
 
-        List<uint> submitList = new List<uint>();
-        List<string> submitListThread = new List<string>();
         List<double> hashStatList = new List<double>();
+
+        IntPtr hModule;
 
         public void Dig(object sender, DoWorkEventArgs e)
         {
@@ -78,6 +113,8 @@ namespace RaptoreumDigger
             byte[] databyte = new byte[76];
             uint targetbyte = 0;
 
+
+            //200000007c6e5530a551ca1496969d0909412315cdefd569e0c64db09207663680af4278c303fb0ff0ad69b0dea42307b075b246822f444ee444450af3b786f7beb377256094edac1d0f1d61
 
             if (GV.Bench)
             {
@@ -99,31 +136,13 @@ namespace RaptoreumDigger
                 databyte[33] = BitConverter.GetBytes(0x00000280)[2];
                 databyte[34] = BitConverter.GetBytes(0x00000280)[3];
 
+                //databyte = Utilities.ReverseByteArrayByFours(Utilities.HexStringToByteArray("200000007c6e5530a551ca1496969d0909412315cdefd569e0c64db09207663680af4278c303fb0ff0ad69b0dea42307b075b246822f444ee444450af3b786f7beb377256094edac1d0f1d61"));
             }
             else
             {
                 databyte = Utilities.ReverseByteArrayByFours(Utilities.HexStringToByteArray(ThisJob.Data));
                 targetbyte = Convert.ToUInt32(ThisJob.Target);
             }
-
-            //if (main.cpuMode == 0)
-            //{
-            //    hModule = LoadLibrary("GhostriderAVX2.dll");
-            //}
-
-            //if (main.cpuMode == 1)
-            //{
-            //    hModule = LoadLibrary("GhostriderSSE2.dll");
-            //}
-
-            //intPtr_GhostriderInit = GetProcAddress(hModule, "GhostriderInit");
-            //_GhostriderInit = (GhostriderInit)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderInit, typeof(GhostriderInit));
-
-            //intPtr_GhostriderFree = GetProcAddress(hModule, "GhostriderFree");
-            //_GhostriderFree = (GhostriderFree)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderFree, typeof(GhostriderFree));
-
-            //intPtr_GhostriderWork = GetProcAddress(hModule, "GhostriderWork");
-            //_GhostriderWork = (GhostriderWork)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderWork, typeof(GhostriderWork));
 
             if (main.statsReset)
             {
@@ -137,37 +156,45 @@ namespace RaptoreumDigger
             }
 
             done = false;
-            FinalNonce = 0;
 
-            submitList = new List<uint>();
             hashCountList = new int[threads.Length];
             hashStartList = new DateTime[threads.Length];
             hashStatList = new List<double>();
 
+            if (main.submitList.Count == 0)
+            {
+                GV.lastNonceList = new uint[threads.Length];
+            }
+
             uint workSize = (uint)(uint.MaxValue / threads.Length);
 
-            //_GhostriderInit();
+            hModule = LoadLibrary("Ghostrider.dll");
 
-            //Random rnd = new Random();
             int start = 0;
 
             for (int i = 0; i < threads.Length; i++)
             {
-                //start = rnd.Next(0, (int)(workSize / 2));
-
                 ArrayList args = new ArrayList();
                 args.Add(ThisJob);
                 args.Add(ztratum);
                 args.Add(i);
                 args.Add(databyte);
                 args.Add(targetbyte);
-                args.Add((uint)((i * workSize) + start));
+
+                if (GV.lastNonceList[i] > 0)
+                {
+                    args.Add(GV.lastNonceList[i]);
+                }
+                else
+                {
+                    args.Add((uint)((i * workSize) + start));
+                }
+
                 args.Add((uint)((i + 1) * workSize));
 
                 threads[i] = new Thread(new ParameterizedThreadStart(doGR));
 
-
-                threads[i].IsBackground = false;
+                threads[i].IsBackground = true;
                 threads[i].Priority = ThreadPriority.BelowNormal;
                 threads[i].Start(args);
             }
@@ -183,6 +210,8 @@ namespace RaptoreumDigger
 
             main.WriteLog("Current Hashrate: " + hashStatList.Sum().ToString("0.00") + " Hash/s");
             UpdateStats(hashStatList.Sum().ToString("0.00"));
+
+            FreeLibrary(hModule);
         }
 
         static byte[] be32enc(uint x)
@@ -197,39 +226,7 @@ namespace RaptoreumDigger
 
         public void doGR(object o)
         {
-            int hModule = 0;
-
-            IntPtr intPtr_GhostriderInit;
-            GhostriderInit _GhostriderInit;
-
-            IntPtr intPtr_GhostriderFree;
-            GhostriderFree _GhostriderFree;
-
-            IntPtr intPtr_GhostriderWork;
-            GhostriderWork _GhostriderWork;
-
-            if (main.cpuMode == 0)
-            {
-                hModule = LoadLibrary("GhostriderAVX2.dll");
-            }
-
-            if (main.cpuMode == 1)
-            {
-                hModule = LoadLibrary("GhostriderSSE2.dll");
-            }
-
-            intPtr_GhostriderInit = GetProcAddress(hModule, "GhostriderInit");
-            _GhostriderInit = (GhostriderInit)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderInit, typeof(GhostriderInit));
-
-            intPtr_GhostriderFree = GetProcAddress(hModule, "GhostriderFree");
-            _GhostriderFree = (GhostriderFree)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderFree, typeof(GhostriderFree));
-
-
-            intPtr_GhostriderWork = GetProcAddress(hModule, "GhostriderWork");
-            _GhostriderWork = (GhostriderWork)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderWork, typeof(GhostriderWork));
-
-
-            _GhostriderInit();
+            IntPtr processHandle = Process.GetCurrentProcess().Handle;
 
             Action a;
 
@@ -242,6 +239,54 @@ namespace RaptoreumDigger
             uint Target = (uint)args[4];
             uint Nonce = (uint)args[5];
             uint MaxNonce = (uint)args[6];
+
+            IntPtr intPtr_GhostriderInit;
+            GhostriderInit _GhostriderInit;
+
+            IntPtr intPtr_GhostriderWork;
+            GhostriderWork _GhostriderWork;
+
+            intPtr_GhostriderInit = UnsafeNativeMethods.GetProcAddress(hModule, "GhostriderInit");
+            _GhostriderInit = (GhostriderInit)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderInit, typeof(GhostriderInit));
+
+            intPtr_GhostriderWork = GetProcAddress(hModule, "GhostriderWork");
+            _GhostriderWork = (GhostriderWork)Marshal.GetDelegateForFunctionPointer(intPtr_GhostriderWork, typeof(GhostriderWork));
+
+            IntPtr hp_state = new IntPtr();
+
+            int memSize = (int)(GV.largePageMinimum * 1);
+
+            bool usinglargeMem = false;
+
+            thLock.AcquireWriterLock(Timeout.Infinite);
+
+            try
+            {
+                if (GV.largeMemAccess)
+                {
+                    hp_state = VirtualAllocEx(processHandle, IntPtr.Zero, new IntPtr(memSize), AllocationType.Commit | AllocationType.Reserve | AllocationType.LargePages, MemoryProtection.ReadWrite);
+
+                    if (hp_state == IntPtr.Zero)
+                    {
+                        hp_state = Marshal.AllocHGlobal(memSize);
+                        usinglargeMem = false;
+                    }
+                    else
+                    {
+                        usinglargeMem = true;
+                    }
+                }
+                else
+                {
+                    hp_state = Marshal.AllocHGlobal(memSize);
+                    usinglargeMem = false;
+                }
+            }
+            catch { }
+
+            thLock.ReleaseLock();
+
+            _GhostriderInit(hp_state);
 
             if (GV.Bench)
                 Target = 0x00ff;
@@ -265,122 +310,118 @@ namespace RaptoreumDigger
 
             hashStartList[threadId] = StartTime;
 
+
+            while (!done)
+            {
+                if (GV.StopMining)
+                {
+                    break;
+                }
+
+                n = be32enc(Nonce);
+
+                Array.Copy(n, 0, input, 76, 4);
+
+                _GhostriderWork(input, output);
+
+                uint ou = BitConverter.ToUInt32(output, 28);
+
+                Hashcount++;
+                main.totalHashFoundList[threadId]++;
+                hashCountList[threadId] = Hashcount;
+
+                if (ou <= GV.CurrentTarget)
+                {
+                    if (!GV.Bench)
+                    {
+                        if (!main.submitList.Contains(Nonce))
+                        {
+                            if (main.lastJob == ThisJob.JobID)
+                            {
+                                main.submitList.Add(Nonce);
+                                main.submitListThread.Add(Nonce.ToString() + "_" + threadId.ToString() + "_" + ThisJob.JobID.ToString());
+
+                                main.SharesSubmitted++;
+                                main.totalShareSubmited++;
+
+                                ztratum.SendSUBMIT(ThisJob.JobID, ThisJob.Data.Substring(68 * 2, 8), Nonce, GV.CurrentDifficulty);
+                                a = () => main.pictureBox1.Image = GV.eyeDown; main.pictureBox1.Invoke(a);
+                            }
+                            else
+                            {
+                                done = true;
+                            }
+                        }
+                    }
+
+                    List<double> hashStatListSub = new List<double>();
+                    for (int i = 0; i < hashStartList.Length; i++)
+                    {
+                        double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
+                        hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
+                    }
+
+                    main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
+                    UpdateStats(hashStatListSub.Sum().ToString("0.00"));
+                }
+
+                if ((threadId == 0) && (Nonce > 1) && ((DateTime.Now - reportTimeStart).TotalSeconds > 10))
+                {
+                    reportTimeStart = DateTime.Now;
+                    List<double> hashStatListSub = new List<double>();
+                    for (int i = 0; i < hashStartList.Length; i++)
+                    {
+                        double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
+                        hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
+                    }
+
+                    main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
+
+                    UpdateStats(hashStatListSub.Sum().ToString("0.00"));
+                }
+
+                Nonce++;
+
+                GV.lastNonceList[threadId] = Nonce;
+
+                if (Nonce >= MaxNonce)
+                {
+                    break;
+                }
+
+            }
+
+            thLock.AcquireWriterLock(Timeout.Infinite);
+
             try
             {
-                while (!done)
+                if (usinglargeMem)
                 {
-                    if (GV.StopMining)
-                    {
-                        break;
-                    }
-
-                    n = be32enc(Nonce);
-
-                    Array.Copy(n, 0, input, 76, 4);
-
-                    _GhostriderWork(input, output);
-
-                    // GhostriderWork(input, output);
-
-                    uint ou = BitConverter.ToUInt32(output, 28);
-
-                    Hashcount++;
-                    main.totalHashFoundList[threadId]++;
-                    hashCountList[threadId] = Hashcount;
-
-                    if (ou <= GV.CurrentTarget)
-                    {
-                        if (!GV.Bench)
-                        {
-                            if (!submitList.Contains(Nonce))
-                            {
-                                if (main.lastJob == ThisJob.JobID)
-                                {
-                                    submitList.Add(Nonce);
-                                    submitListThread.Add(Nonce.ToString() + "_" + threadId.ToString());
-
-                                    main.SharesSubmitted++;
-                                    main.totalShareSubmited++;
-
-                                    ztratum.SendSUBMIT(ThisJob.JobID, ThisJob.Data.Substring(68 * 2, 8), Nonce, GV.CurrentDifficulty);
-                                    a = () => main.pictureBox1.Image = Properties.Resources.EyeDown; main.pictureBox1.Invoke(a);
-                                    //a = () => main.txtLog.BackColor = System.Drawing.Color.WhiteSmoke; main.txtLog.Invoke(a);
-                                }
-                            }
-
-                        }
-
-                        List<double> hashStatListSub = new List<double>();
-                        for (int i = 0; i < hashStartList.Length; i++)
-                        {
-                            double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
-                            //main.WriteLog("Thread " + (i + 1).ToString() + " running - " + hashCountList[i].ToString() + " hashes in " + ElapsedtimeSub.ToString("0.00") + " s. Speed: " + (hashCountList[i] / ElapsedtimeSub).ToString("0.00") + " Hash/s");
-                            hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
-                        }
-
-                        main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
-                        UpdateStats(hashStatListSub.Sum().ToString("0.00"));
-                    }
-
-                    if ((threadId == 0) && (Nonce > 1) && ((DateTime.Now - reportTimeStart).TotalSeconds > 10))
-                    {
-                        reportTimeStart = DateTime.Now;
-                        List<double> hashStatListSub = new List<double>();
-                        for (int i = 0; i < hashStartList.Length; i++)
-                        {
-                            double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
-                            //main.WriteLog("Thread " + (i + 1).ToString() + " running - " + hashCountList[i].ToString() + " hashes in " + ElapsedtimeSub.ToString("0.00") + " s. Speed: " + (hashCountList[i] / ElapsedtimeSub).ToString("0.00") + " Hash/s");
-                            hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
-                        }
-
-                        main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
-
-                        UpdateStats(hashStatListSub.Sum().ToString("0.00"));
-
-                    }
-
-                    Nonce++;
-
-                    if (Nonce >= MaxNonce)
-                    {
-                        break;
-                    }
-
+                    VirtualFreeEx(processHandle, hp_state, 0, FreeType.Release);
+                }
+                else
+                {
+                    Marshal.FreeHGlobal(hp_state);
                 }
             }
-            catch (Exception ex)
-            {
-                main.WriteLog(ex.Message);
-                FinalNonce = 0;
-            }
+            catch { }
 
-
-            _GhostriderFree();
-
-
-
-            Marshal.FreeCoTaskMem(intPtr_GhostriderInit);
-            Marshal.FreeHGlobal(intPtr_GhostriderFree);
-            Marshal.FreeHGlobal(intPtr_GhostriderWork);
-
-            GC.WaitForPendingFinalizers();
-            GC.SuppressFinalize(_GhostriderInit);
-            GC.SuppressFinalize(_GhostriderFree);
-            GC.SuppressFinalize(_GhostriderWork);
-            GC.Collect();
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-
-            FreeLibrary(hModule);
-
-
-
+            thLock.ReleaseLock();
 
             double Elapsedtime = (DateTime.Now - StartTime).TotalSeconds;
 
-            main.WriteLog("Thread finished - " + Hashcount.ToString() + " hashes in " + Elapsedtime.ToString("0.00") + " s. Speed: " + (Hashcount / Elapsedtime).ToString("0.00") + " Hash/s");
+            string largeMemMsg = "";
+
+            if (usinglargeMem)
+            {
+                largeMemMsg = "LP ON";
+            }
+            else
+            {
+                largeMemMsg = "LP OFF";
+            }
+
+            main.WriteLog("Thread finished - " + Hashcount.ToString() + " hashes in " + Elapsedtime.ToString("0.00") + " s. Speed: " + (Hashcount / Elapsedtime).ToString("0.00") + " Hash/s" + " - " + largeMemMsg);
 
             hashStatList.Add(Hashcount / Elapsedtime);
         }
