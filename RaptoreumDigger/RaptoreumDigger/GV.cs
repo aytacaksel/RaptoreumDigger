@@ -1,9 +1,14 @@
-﻿using System.Threading;
+﻿using System.Drawing;
+using System.Threading;
 
 namespace RaptoreumDigger
 {
     public static class GV
     {
+        public static Image eyeUP;
+        public static Image eyeDown;
+        public static Icon eye;
+
         public static double CurrentDifficulty;
         public static double CurrentTarget;
         public static bool StopMining = false;
@@ -17,6 +22,12 @@ namespace RaptoreumDigger
         public static bool[] threadStateList;
         public static uint[] NonceList;
         public static uint[] MaxNonceList;
+
+        public static uint[] lastNonceList;
+
+        public static bool largeMemAccess = false;
+
+        public static uint largePageMinimum = 0;
     }
 
     public class HT
