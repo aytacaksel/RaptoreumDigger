@@ -27,7 +27,7 @@ namespace RaptoreumDigger
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern UInt32 GetLargePageMinimum();
 
-        string softver = "V1.7";
+        string softver = "V1.8";
 
         private static Digger CDigger;
         private static Queue<Job> IncomingJobs = new Queue<Job>();

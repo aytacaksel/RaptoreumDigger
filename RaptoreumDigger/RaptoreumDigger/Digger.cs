@@ -170,7 +170,7 @@ namespace RaptoreumDigger
 
             submitQList = new List<Submit>();
 
-            uint workSize = (uint)(uint.MaxValue / threads.Length);
+
 
             hModule = LoadLibrary("Ghostrider.dll");
 
@@ -180,26 +180,28 @@ namespace RaptoreumDigger
             thz.Priority = ThreadPriority.BelowNormal;
             thz.Start(ztratum);
 
+            uint workSize = (uint)(uint.MaxValue / threads.Length);
+
+
 
             int start = 0;
 
+            string starts = "";
+            Random rnd = new Random();
+
             for (int i = 0; i < threads.Length; i++)
             {
+                start = rnd.Next(0, (int)(workSize / 2));
+                start += 100000;
+
                 ArrayList args = new ArrayList();
                 args.Add(ThisJob);
                 args.Add(ztratum);
                 args.Add(i);
                 args.Add(databyte);
                 args.Add(targetbyte);
-
-                if (GV.lastNonceList[i] > 0)
-                {
-                    args.Add(GV.lastNonceList[i]);
-                }
-                else
-                {
-                    args.Add((uint)((i * workSize) + start));
-                }
+                args.Add((uint)((i * workSize) + start));
+                starts += ((uint)((i * workSize) + start)).ToString() + "\r\n";
 
                 args.Add((uint)((i + 1) * workSize));
 
@@ -304,6 +306,10 @@ namespace RaptoreumDigger
 
                     if (hp_state == IntPtr.Zero)
                     {
+                        int error = Marshal.GetLastWin32Error();
+
+                        main.WriteLog("Thread" + threadId.ToString() + ": " + "LP Error=" + error.ToString() + " - LP OFF");
+
                         hp_state = Marshal.AllocHGlobal(memSize);
                         usinglargeMem = false;
                     }
