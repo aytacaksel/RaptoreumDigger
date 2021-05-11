@@ -27,7 +27,7 @@ namespace RaptoreumDigger
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern UInt32 GetLargePageMinimum();
 
-        string softver = "V1.6";
+        string softver = "V1.7";
 
         private static Digger CDigger;
         private static Queue<Job> IncomingJobs = new Queue<Job>();
@@ -387,6 +387,9 @@ namespace RaptoreumDigger
                 GV.CurrentTarget = Convert.ToUInt32(diff);
                 ThisJob.Target = Convert.ToUInt32(diff).ToString();
                 ThisJob.Data = ThisJob.Version + ThisJob.PreviousHash + MerkleRoot + ThisJob.NetworkTime + ThisJob.NetworkDifficulty;
+
+
+
             }
 
 
@@ -682,6 +685,23 @@ namespace RaptoreumDigger
                 txtLog.ScrollToCaret();
             }
         }
+    }
+
+    public class Submit
+    {
+        public string JobID = "";
+        public string nTime = "";
+        public uint Nonce = 0;
+        public double Difficulty = 0;
+
+        public Submit(string JobID, string nTime, uint Nonce, double Difficulty)
+        {
+            this.JobID = JobID;
+            this.nTime = nTime;
+            this.Nonce = Nonce;
+            this.Difficulty = Difficulty;
+        }
+
     }
 
     public class Job

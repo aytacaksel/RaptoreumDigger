@@ -102,6 +102,9 @@ namespace RaptoreumDigger
 
         IntPtr hModule;
 
+        volatile List<Submit> submitQList = new List<Submit>();
+        bool stopQ = false;
+
         public void Dig(object sender, DoWorkEventArgs e)
         {
             Job ThisJob = (Job)((object[])e.Argument)[0];
@@ -113,30 +116,29 @@ namespace RaptoreumDigger
             byte[] databyte = new byte[76];
             uint targetbyte = 0;
 
-
-            //200000007c6e5530a551ca1496969d0909412315cdefd569e0c64db09207663680af4278c303fb0ff0ad69b0dea42307b075b246822f444ee444450af3b786f7beb377256094edac1d0f1d61
-
             if (GV.Bench)
             {
-                for (byte n = 0; n < 74; n++)
-                    databyte[n] = n;
+                //200000007c6e5530a551ca1496969d0909412315cdefd569e0c64db09207663680af4278c303fb0ff0ad69b0dea42307b075b246822f444ee444450af3b786f7beb377256094edac1d0f1d61
 
-                databyte[17] = BitConverter.GetBytes(1619664393)[0];
-                databyte[18] = BitConverter.GetBytes(1619664393)[1];
-                databyte[19] = BitConverter.GetBytes(1619664393)[2];
-                databyte[20] = BitConverter.GetBytes(1619664393)[3];
+                //for (byte n = 0; n < 74; n++)
+                //    databyte[n] = n;
 
-                databyte[20] = BitConverter.GetBytes(0x80000000)[0];
-                databyte[21] = BitConverter.GetBytes(0x80000000)[1];
-                databyte[22] = BitConverter.GetBytes(0x80000000)[2];
-                databyte[23] = BitConverter.GetBytes(0x80000000)[3];
+                //databyte[17] = BitConverter.GetBytes(1619664393)[0];
+                //databyte[18] = BitConverter.GetBytes(1619664393)[1];
+                //databyte[19] = BitConverter.GetBytes(1619664393)[2];
+                //databyte[20] = BitConverter.GetBytes(1619664393)[3];
 
-                databyte[31] = BitConverter.GetBytes(0x00000280)[0];
-                databyte[32] = BitConverter.GetBytes(0x00000280)[1];
-                databyte[33] = BitConverter.GetBytes(0x00000280)[2];
-                databyte[34] = BitConverter.GetBytes(0x00000280)[3];
+                //databyte[20] = BitConverter.GetBytes(0x80000000)[0];
+                //databyte[21] = BitConverter.GetBytes(0x80000000)[1];
+                //databyte[22] = BitConverter.GetBytes(0x80000000)[2];
+                //databyte[23] = BitConverter.GetBytes(0x80000000)[3];
 
-                //databyte = Utilities.ReverseByteArrayByFours(Utilities.HexStringToByteArray("200000007c6e5530a551ca1496969d0909412315cdefd569e0c64db09207663680af4278c303fb0ff0ad69b0dea42307b075b246822f444ee444450af3b786f7beb377256094edac1d0f1d61"));
+                //databyte[31] = BitConverter.GetBytes(0x00000280)[0];
+                //databyte[32] = BitConverter.GetBytes(0x00000280)[1];
+                //databyte[33] = BitConverter.GetBytes(0x00000280)[2];
+                //databyte[34] = BitConverter.GetBytes(0x00000280)[3];
+
+                databyte = Utilities.ReverseByteArrayByFours(Utilities.HexStringToByteArray("200000007c6e5530a551ca1496969d0909412315cdefd569e0c64db09207663680af4278c303fb0ff0ad69b0dea42307b075b246822f444ee444450af3b786f7beb377256094edac1d0f1d61"));
             }
             else
             {
@@ -166,9 +168,18 @@ namespace RaptoreumDigger
                 GV.lastNonceList = new uint[threads.Length];
             }
 
+            submitQList = new List<Submit>();
+
             uint workSize = (uint)(uint.MaxValue / threads.Length);
 
             hModule = LoadLibrary("Ghostrider.dll");
+
+            stopQ = false;
+            Thread thz = new Thread(new ParameterizedThreadStart(submitQ));
+            thz.IsBackground = false;
+            thz.Priority = ThreadPriority.BelowNormal;
+            thz.Start(ztratum);
+
 
             int start = 0;
 
@@ -194,7 +205,7 @@ namespace RaptoreumDigger
 
                 threads[i] = new Thread(new ParameterizedThreadStart(doGR));
 
-                threads[i].IsBackground = true;
+                threads[i].IsBackground = false;
                 threads[i].Priority = ThreadPriority.BelowNormal;
                 threads[i].Start(args);
             }
@@ -205,6 +216,12 @@ namespace RaptoreumDigger
                 threads[i].Join();
             }
 
+            stopQ = true;
+
+            while (thz.ThreadState == System.Threading.ThreadState.Running)
+            {
+                Thread.Sleep(10);
+            }
 
             e.Result = null;
 
@@ -224,6 +241,25 @@ namespace RaptoreumDigger
             return p;
         }
 
+        public void submitQ(object o)
+        {
+            Ztratum ztratum = (Ztratum)o;
+
+            while (true)
+            {
+                if (stopQ)
+                    return;
+
+                if (submitQList.Count > 0)
+                {
+                    ztratum.SendSUBMIT(submitQList[0].JobID, submitQList[0].nTime, submitQList[0].Nonce, submitQList[0].Difficulty);
+                    submitQList.RemoveAt(0);
+                }
+
+                Thread.Sleep(1);
+            }
+
+        }
         public void doGR(object o)
         {
             IntPtr processHandle = Process.GetCurrentProcess().Handle;
@@ -254,7 +290,7 @@ namespace RaptoreumDigger
 
             IntPtr hp_state = new IntPtr();
 
-            int memSize = (int)(GV.largePageMinimum * 1);
+            int memSize = (int)(GV.largePageMinimum * 2);
 
             bool usinglargeMem = false;
 
@@ -295,7 +331,6 @@ namespace RaptoreumDigger
 
             byte[] input = new byte[80];
 
-
             Array.Copy(Tempdata, input, 76);
 
             byte[] n = be32enc(Nonce);
@@ -310,85 +345,92 @@ namespace RaptoreumDigger
 
             hashStartList[threadId] = StartTime;
 
-
-            while (!done)
+            try
             {
-                if (GV.StopMining)
+                while (!done)
                 {
-                    break;
-                }
-
-                n = be32enc(Nonce);
-
-                Array.Copy(n, 0, input, 76, 4);
-
-                _GhostriderWork(input, output);
-
-                uint ou = BitConverter.ToUInt32(output, 28);
-
-                Hashcount++;
-                main.totalHashFoundList[threadId]++;
-                hashCountList[threadId] = Hashcount;
-
-                if (ou <= GV.CurrentTarget)
-                {
-                    if (!GV.Bench)
+                    if (GV.StopMining)
                     {
-                        if (!main.submitList.Contains(Nonce))
+                        break;
+                    }
+
+                    n = be32enc(Nonce);
+
+                    Array.Copy(n, 0, input, 76, 4);
+
+
+                    _GhostriderWork(input, output);
+
+
+                    uint ou = BitConverter.ToUInt32(output, 28);
+
+                    Hashcount++;
+                    main.totalHashFoundList[threadId]++;
+                    hashCountList[threadId] = Hashcount;
+
+                    if (ou <= GV.CurrentTarget)
+                    {
+                        if (!GV.Bench)
                         {
-                            if (main.lastJob == ThisJob.JobID)
+                            if (!main.submitList.Contains(Nonce))
                             {
-                                main.submitList.Add(Nonce);
-                                main.submitListThread.Add(Nonce.ToString() + "_" + threadId.ToString() + "_" + ThisJob.JobID.ToString());
+                                if (main.lastJob == ThisJob.JobID)
+                                {
+                                    main.submitList.Add(Nonce);
+                                    main.submitListThread.Add(Nonce.ToString() + "_" + threadId.ToString() + "_" + ThisJob.JobID.ToString());
 
-                                main.SharesSubmitted++;
-                                main.totalShareSubmited++;
-
-                                ztratum.SendSUBMIT(ThisJob.JobID, ThisJob.Data.Substring(68 * 2, 8), Nonce, GV.CurrentDifficulty);
-                                a = () => main.pictureBox1.Image = GV.eyeDown; main.pictureBox1.Invoke(a);
-                            }
-                            else
-                            {
-                                done = true;
+                                    submitQList.Add(new Submit(ThisJob.JobID, ThisJob.Data.Substring(68 * 2, 8), Nonce, GV.CurrentDifficulty));
+                                    //ztratum.SendSUBMIT(ThisJob.JobID, ThisJob.Data.Substring(68 * 2, 8), Nonce, GV.CurrentDifficulty);
+                                    a = () => main.pictureBox1.Image = GV.eyeDown; main.pictureBox1.Invoke(a);
+                                }
+                                else
+                                {
+                                    done = true;
+                                }
                             }
                         }
+
+                        List<double> hashStatListSub = new List<double>();
+                        for (int i = 0; i < hashStartList.Length; i++)
+                        {
+                            double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
+                            hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
+                        }
+
+                        main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
+                        UpdateStats(hashStatListSub.Sum().ToString("0.00"));
                     }
 
-                    List<double> hashStatListSub = new List<double>();
-                    for (int i = 0; i < hashStartList.Length; i++)
+                    if ((threadId == 0) && (Nonce > 1) && ((DateTime.Now - reportTimeStart).TotalSeconds > 10))
                     {
-                        double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
-                        hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
+                        reportTimeStart = DateTime.Now;
+                        List<double> hashStatListSub = new List<double>();
+                        for (int i = 0; i < hashStartList.Length; i++)
+                        {
+                            double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
+                            hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
+                        }
+
+                        main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
+
+                        UpdateStats(hashStatListSub.Sum().ToString("0.00"));
                     }
 
-                    main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
-                    UpdateStats(hashStatListSub.Sum().ToString("0.00"));
-                }
+                    Nonce++;
 
-                if ((threadId == 0) && (Nonce > 1) && ((DateTime.Now - reportTimeStart).TotalSeconds > 10))
-                {
-                    reportTimeStart = DateTime.Now;
-                    List<double> hashStatListSub = new List<double>();
-                    for (int i = 0; i < hashStartList.Length; i++)
+                    GV.lastNonceList[threadId] = Nonce;
+
+                    if (Nonce >= MaxNonce)
                     {
-                        double ElapsedtimeSub = (DateTime.Now - hashStartList[i]).TotalSeconds;
-                        hashStatListSub.Add(hashCountList[i] / ElapsedtimeSub);
+                        break;
                     }
 
-                    main.WriteLog("Current Hashrate: " + hashStatListSub.Sum().ToString("0.00") + " Hash/s");
-
-                    UpdateStats(hashStatListSub.Sum().ToString("0.00"));
                 }
-
-                Nonce++;
-
-                GV.lastNonceList[threadId] = Nonce;
-
-                if (Nonce >= MaxNonce)
-                {
-                    break;
-                }
-
+            }
+            catch (Exception ex)
+            {
+                main.WriteLog(ex.Message);
+                done = true;
             }
 
             thLock.AcquireWriterLock(Timeout.Infinite);
@@ -446,6 +488,7 @@ namespace RaptoreumDigger
             a = () => main.lblCurrentDifficulty.Text = GV.CurrentDifficulty.ToString("0.00000"); main.lblCurrentDifficulty.Invoke(a);
             a = () => main.lblUptime.Text = Elapsedtime.ToString("0.00") + " s"; main.lblUptime.Invoke(a);
         }
+
     }
 
 }

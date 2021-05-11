@@ -196,6 +196,10 @@ namespace RaptoreumDigger
             try
             {
                 tcpClient.GetStream().Write(bytesSent, 0, bytesSent.Length);
+
+                main.SharesSubmitted++;
+                main.totalShareSubmited++;
+
                 HT ht = new HT(Command.id, Command.method);
                 PendingACKs.Add(ht);
             }
